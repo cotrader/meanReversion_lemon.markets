@@ -8,16 +8,17 @@ import time
 
 
 def seconds_till_market_opens(entered_time):
-    if entered_time.weekday() in range(0, 4):
+    if entered_time.weekday() <= 4:
         d = (entered_time + timedelta(days=1)).date()
     else:
-        days_till_market_opens = 0 - time.weekday() + 7
+        days_till_market_opens = 0 - entered_time.weekday() + 7
         d = (entered_time + timedelta(days=days_till_market_opens)).date()
     # slightly later than actual market open time to avoid unstable market
     next_day = datetime.datetime.combine(d, datetime.time(10, 30))
     seconds = (next_day - entered_time).total_seconds()  # number of seconds until market reopens
     return seconds  # we can then later combine this function with the time.sleep()-function to determine
     # how long we need to wait until our next execution
+
 
 
 def mean_reversion():
@@ -30,8 +31,8 @@ def mean_reversion():
         # works for Central European timezone (CET; Berlin, Paris, Rome and so on).
         # Please alter for yourself if you need a different timezone
         current_day_time = datetime.datetime.now()
-        if current_day_time.weekday() in range(0, 4):
-            if current_day_time.hour in range(8, 23):
+        if current_day_time.weekday() <= 4:
+            if current_day_time.hour in range(7, 24):
                 print('market open, order creation possible')
                 market_open = True
             else:
